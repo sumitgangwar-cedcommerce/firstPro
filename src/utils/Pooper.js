@@ -1,4 +1,4 @@
-import { ActionList, Button , Icon, Popover } from "@shopify/polaris";
+import { ActionList, Button , Popover } from "@shopify/polaris";
 import React, { useCallback, useState } from "react";
 import { MobileVerticalDotsMajor } from "@shopify/polaris-icons";
 

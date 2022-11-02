@@ -1,5 +1,5 @@
 import { Frame, Navigation } from "@shopify/polaris";
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SideBar = () => {

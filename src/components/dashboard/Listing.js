@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Card, Tabs, Badge, Frame, TextField, Button } from "@shopify/polaris";
 import {
-  getRefineProducts,
-  productHeaders,
   productOptions,
 } from "../../api/apiConstants";
 import ProTable from "./product-table";
