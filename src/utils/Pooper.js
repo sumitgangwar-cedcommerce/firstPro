@@ -10,6 +10,9 @@ const Pooper = ({status}) => {
     []
   );
 
+  const notListedAction = [{ content: "Edit Product" }, { content: "Amazon Lookup" }]
+  const errorAction = [...notListedAction , {content:'Sync inventory'} , {content:'Sync Price'} , {content:'Sync Image'} , {content:'Sync Product'} , {content : 'Delete Product'}]
+
   const activator = (
     <Button icon={MobileVerticalDotsMajor}  onClick={togglePopoverActive}>
         
@@ -25,7 +28,7 @@ const Pooper = ({status}) => {
     >
       <ActionList
         actionRole="menuitem"
-        items={[{ content: "Edit Product" }, { content: "Amazon Lookup" }]}
+        items={status === 'Not Listed' ? notListedAction : errorAction}
       />
     </Popover>
   );

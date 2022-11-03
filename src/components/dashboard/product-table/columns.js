@@ -64,7 +64,7 @@ const columns = [
   {
     title: "Actions",
     key: "Actions",
-    render: () => <Pooper />,
+    render: (record) => <Pooper status={record.status}/>,
   },
 ];
 

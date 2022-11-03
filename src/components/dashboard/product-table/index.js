@@ -5,45 +5,31 @@ import columns from "./columns";
 import { tableOnRow } from "./tableOnRow";
 import { PlusCircleTwoTone, MinusCircleTwoTone } from "@ant-design/icons";
 
-const ProTable = ({ currentTab, filter }) => {
+const ProTable = ({ currentTab }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const dataFormatter = (data) => {
-    if(!data.type){
-      if(data[0].items.length===1) data[0].type = 'simple'
-      else  data[0].type = 'variation'
-    }
-    let t = [];
-    data.map((item) => {
-      let modifiedData = tableOnRow("main")(item);
-      let modifiedItems = [];
-      item.items.map((i) => {
-        modifiedItems = [...modifiedItems, tableOnRow("inner")(i)];
-      });
-      modifiedData.items = modifiedItems;
-      t = [...t, modifiedData];
-    });
-    setLoading(false);
-    console.log(t)
-    setData(t);
-  };
-
   useEffect(() => {
-    if (!filter) {
-      setLoading(true);
-      fetch(getRefineProducts[currentTab], productOptions)
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.success) {
-            console.log(res);
-            dataFormatter(res.data.rows);
-          } else alert(res.message);
-        });
-    } else {
-      dataFormatter(filter)
-    }
-  }, [currentTab, filter]);
+    setLoading(true);
+    fetch(getRefineProducts[currentTab], productOptions)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          console.log(res);
+          let t = [];
+          res.data.rows.map((item) => {
+            let modifiedData = tableOnRow("main")(item);
+            let modifiedItems = [];
+            item.items.map((i) => {
+              modifiedItems = [...modifiedItems, tableOnRow("inner")(i)];
+            });
+            modifiedData.items = modifiedItems;
+            t = [...t, modifiedData];
+          });
+          setLoading(false);
+          setData(t);
+        } else alert(res.message);
+      });
+  }, [currentTab]);
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -68,7 +54,7 @@ const ProTable = ({ currentTab, filter }) => {
         columns={columns}
         rowSelection={{ ...rowSelection }}
         loading={loading}
-        size={"small"}
+        size={'small'}
         expandable={{
           expandIcon: ({ expanded, onExpand, record }) =>
             expanded ? (
