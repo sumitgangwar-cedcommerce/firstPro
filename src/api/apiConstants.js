@@ -60,16 +60,19 @@ export const proSearch = (data) => {
 } 
 
 
-const filterHeader = () =>{
-  return {
+const filterHeader = {
+ 
     ...productHeaders , 
-    Accept: 'application/json',
-  }
+    'Accept': 'application/json',
+    'content-type': 'application/json'
+  
 }
+
+console.log(filterHeader)
 
 export const filterHeaders = {
   method : 'POST',
-  headers : filterHeader(),
+  headers : {...filterHeader},
   body : JSON.stringify({
     "target_marketplace": "eyJtYXJrZXRwbGFjZSI6ImFsbCIsInNob3BfaWQiOm51bGx9",
     "source": {
