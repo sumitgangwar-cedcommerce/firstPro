@@ -9,13 +9,14 @@ import { AppProvider } from "@shopify/polaris";
 import store from "./redux/Store";
 import { Provider } from "react-redux";
 import 'antd/dist/antd.css'; 
+import enTranslations from '@shopify/polaris/locales/en.json';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 
     <Provider store={store}>
       <BrowserRouter>
-        <AppProvider>
+        <AppProvider i18n={enTranslations}>
           <App />
         </AppProvider>
       </BrowserRouter>

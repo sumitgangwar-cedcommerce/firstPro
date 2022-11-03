@@ -1,106 +1,50 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Card, Tabs, Badge, Frame, TextField, Button } from "@shopify/polaris";
 import {
-  productOptions,
-} from "../../api/apiConstants";
+  Card,
+  Tabs,
+  Badge,
+  Frame,
+  TextField,
+  Button,
+  Stack,
+} from "@shopify/polaris";
 import ProTable from "./product-table";
+import StatusTabs from "./product-table/StatusTabs";
+import SearchField from "../SearchField";
+import Pooper from "../../utils/Pooper";
+import ResourceListFilters from "../Filter";
 
 const Listing = () => {
-  const [selected, setSelected] = useState(
-    Number(sessionStorage.getItem("tab"))
-  );
-  const [notListed, setNotListed] = useState(0);
+  const [serText, setSerText] = useState("");
+  const [stab, setStab] = useState(Number(sessionStorage.getItem("tab")));
+  const [filter, setFilter] = useState([]);
 
-  const handleTabChange = useCallback((selectedTabIndex) => {
-    sessionStorage.setItem("tab", selectedTabIndex);
-    setSelected(selectedTabIndex);
-  }, []);
-
-  const tabs = [
-    {
-      id: "all",
-      content: <span>All</span>,
-      accessibilityLabel: "All customers",
-      panelID: "all",
-    },
-    {
-      id: "notListed",
-      content: (
-        <span>
-          Not Listed <Badge status="new">{notListed}</Badge>
-        </span>
-      ),
-      panelID: "not-listed",
-    },
-    {
-      id: "inActive",
-      content: (
-        <span>
-          Inactive <Badge status="info">0</Badge>
-        </span>
-      ),
-      panelID: "inactive",
-    },
-    {
-      id: "inComplete",
-      content: (
-        <span>
-          Incomplete <Badge status="warning">0</Badge>
-        </span>
-      ),
-      panelID: "incomplete",
-    },
-    {
-      id: "active",
-      content: (
-        <span>
-          Active <Badge status="success">0</Badge>
-        </span>
-      ),
-      panelID: "active",
-    },
-    {
-      id: "error",
-      content: <span>Error</span>,
-      panelID: "error",
-    },
-  ];
+  const selectedTab = (data) => setStab(data);
 
   useEffect(() => {
-    fetch(
-      "https://multi-account.sellernext.com/home/public/connector/product/getStatusWiseCount",
-      productOptions
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.success) {
-          let t = 0;
-          res.data.map((item) => (t += item.total));
-          setNotListed(t);
-        } else alert(res.message);
-      });
-  }, []);
-
-  const [serText, setSerText] = useState("");
+    console.log(filter);
+  }, [filter]);
 
   return (
     <Frame>
       <Card>
-        <Tabs fitted tabs={tabs} selected={selected} onSelect={handleTabChange}>
-          <Card.Section>
-            <Card.Section>
-              <TextField
-                value={serText}
-                onChange={(value) => setSerText(value)}
-                connectedRight={<Button>More Filters</Button>}
-              />
-              <Button>Admin Action</Button>
-            </Card.Section>
-          </Card.Section>
-          <Card.Section>
-            <ProTable currentTab={tabs[selected]?.id} />
-          </Card.Section>
-        </Tabs>
+        <Card.Section>
+          <StatusTabs selectedTab={selectedTab} />
+        </Card.Section>
+        <Card.Section>
+          <Stack>
+            <SearchField setFilter={setFilter} />
+            <ResourceListFilters />
+            {/* <Button>More Filters</Button> */}
+            <Pooper />
+            <Button>Sync Status</Button>
+            <Button>Amazon Lookup</Button>
+            <Button>Bulk Updates</Button>
+          </Stack>
+        </Card.Section>
+        <Card.Section>
+          <ProTable currentTab={stab} />
+        </Card.Section>
       </Card>
     </Frame>
   );

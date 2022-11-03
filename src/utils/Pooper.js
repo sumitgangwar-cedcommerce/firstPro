@@ -17,7 +17,6 @@ const Pooper = ({status}) => {
   );
 
   return (
-    <div>
     <Popover
       preferredPosition={'mostSpace'}
       active={popoverActive}
@@ -28,7 +27,7 @@ const Pooper = ({status}) => {
         actionRole="menuitem"
         items={[{ content: "Edit Product" }, { content: "Amazon Lookup" }]}
       />
-    </Popover></div>
+    </Popover>
   );
 };
 

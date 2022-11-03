@@ -14,8 +14,9 @@ const columns = [
   {
     title: "Image",
     dataIndex: "main_image",
-    render: (src) => <Image src={src} alt="#" width={50} />,
+    render: (src) => <Image src={src} alt="#" height={100}  />,
     key: "image",
+    width : '20%',
   },
   {
     title: "Title",
@@ -26,6 +27,7 @@ const columns = [
     title: "Product Details",
     key: "Product Details",
     dataIndex : 'description',
+    width : '50%',
     render: (record) => {
         return (
             <>

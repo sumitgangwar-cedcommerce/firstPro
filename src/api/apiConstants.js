@@ -17,15 +17,15 @@ export const loginFetch = async (data) => {
 //product api data
 
 export const productHeaders = {
-  "Ced-Source-Id": 500,
+  "Ced-Source-Id": 476,
   "Ced-Source-Name": "shopify",
-  "Ced-Target-Id": 640,
+  "Ced-Target-Id": 479,
   "Ced-Target-Name": "amazon",
   appCode:
     "eyJzaG9waWZ5IjoiYW1hem9uX3NhbGVzX2NoYW5uZWwiLCJhbWF6b24iOiJhbWF6b24ifQ==",
   appTag: "amazon_sales_channel",
   Authorization:
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoiNjMzMjlkN2YwNDUxYzA3NGFhMGUxNWE4Iiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNjk4NzMxOTc2LCJpc3MiOiJodHRwczpcL1wvYXBwcy5jZWRjb21tZXJjZS5jb20iLCJ0b2tlbl9pZCI6IjYzNWY2NDQ4YzQxY2M2MjdhMzBjNmIyMiJ9.o0XvqNpmiAaXQgWC8LgaBrhx6Kjc6rwm0vi-aG-ezZHp3Ph1jcaBqKQq1u9PQSwiCjU6US8xiqMbN_l5JYEwmPOWWQF43Fdt8V2i_dYp2L4mj51rKn9pH7xCloNPAiqCAp7IlfdwXU2NL5cYlb8p4Ve9axRKuPaZ6FpEL49fP8zjlT5gsfR7lr5UD_iKmBH-F-R4ORgQC3vR0CfsW42XXebfTiKf5fh2qBAIrjtSPJyO0jgNxLCTppnT3ruBf3yDL7EcAOFXzUZn_G8NsOSaZp5AvMWIMDkpmBO0VvgkIqSuYOlICki6riprysfwhuwU1XAtpNwI6N571dfUTPhXsw",
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoiNjMzMjk2ZDYwZDVlMzE3NjI3NThiMmY5Iiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNjk4OTA3Mzc0LCJpc3MiOiJodHRwczpcL1wvYXBwcy5jZWRjb21tZXJjZS5jb20iLCJ0b2tlbl9pZCI6IjYzNjIxMTZlNTdiNGE3NjNlYzM5YWY5MiJ9.FXwul26U6GG2d9Wrfh5lNu-ikW_vwZ0tbBdjmoVTWhF3tOibyff7buM3tuIcgOkti9UvBpKtTo-SRU8A5UNEah37q1K1k-GQOSdwYxO1Q4Z9oF5AkIk8whl_-gZymjUqlMO0fjKJie6a_A4vxYk-PF8DEUHHOsc0MHeQA7TuaHR95fbV281SVXcmEP17_snN-eNsdOoP70vqiER3BkLV7Nr78JoSNZ38iqqznHEDKkLAgr2p3qI4OKZ7S6SiQglh1YfZgt4oZho868e8RAuV9QSomVpuuXAmyBHDGbUPrLTqvhj_CnzvQzEiNDnu__oh9UbWkTdZdAZhY_S5uzBMYg",
 };
 
 const productPayload = {
@@ -41,7 +41,7 @@ const productPayload = {
 
 export const productOptions = {
   headers : productHeaders,
-  payload : productPayload
+  // payload : productPayload
 }
 
 const productBaseUrl = 'https://multi-account.sellernext.com/home/public/connector/product/getRefineProducts'
@@ -52,5 +52,31 @@ export const getRefineProducts = {
   inActive : `${productBaseUrl}?filter[items.status][1]=Inactive`,
   inComplete : `${productBaseUrl}?count=50&filter[items.status][1]=Incomplete`,
   active : `${productBaseUrl}?count=50&filter[items.status][1]=Active`,
-  error : `${productBaseUrl}?&filter[cif_amazon_multi_active][1]=error`
+  error : `${productBaseUrl}?&filter[cif_amazon_multi_active][1]=error`,
 }
+
+export const proSearch = (data) => {
+  return 'https://multi-account.sellernext.com/home/public/connector/product/getSearchSuggestions?query='+data
+} 
+
+
+const filterHeader = () =>{
+  return {
+    ...productHeaders , 
+    Accept: 'application/json',
+  }
+}
+
+export const filterHeaders = {
+  method : 'POST',
+  headers : filterHeader(),
+  body : JSON.stringify({
+    "target_marketplace": "eyJtYXJrZXRwbGFjZSI6ImFsbCIsInNob3BfaWQiOm51bGx9",
+    "source": {
+        "shopId": "476",
+        "marketplace": "shopify"
+    }
+})
+}
+
+export const filterUrl = 'https://multi-account.sellernext.com/home/public/connector/source/getFilterAttributes'

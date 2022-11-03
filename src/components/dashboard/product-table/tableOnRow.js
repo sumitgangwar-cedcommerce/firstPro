@@ -36,7 +36,7 @@ export const tableOnRow = (tableType) => {
         else record.status = "Not Listed";
       }
 
-      console.log(record);
+      // console.log(record);
       return record
     };
   } else {
