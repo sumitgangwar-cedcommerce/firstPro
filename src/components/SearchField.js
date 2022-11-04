@@ -1,10 +1,12 @@
-import { Autocomplete, Button, Icon } from "@shopify/polaris";
+import { Autocomplete, Button, Columns, Icon } from "@shopify/polaris";
 import { SearchMinor } from "@shopify/polaris-icons";
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { Image } from "antd";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { productOptions, proSearch } from "../api/apiConstants";
-import classes from "./searchField.module.css";
+import { saveFilter } from "../redux/FilterSlice";
 
-function SearchField({setFilter}) {
+function SearchField({ setFilter }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState([]);
@@ -13,43 +15,113 @@ function SearchField({setFilter}) {
     setInputValue(value);
   };
 
-  console.log(inputValue)
+  console.log(inputValue);
 
-  const updateSelection = (data)=>{
-    console.log('data==>>',data)
-    setSelectedOptions(data)
-    // setInputValue(data[0].title)
-    setFilter(prev => [...prev , {container_id : data[0].container_id}])
+  const dispatch = useDispatch()
+
+  const restoreSession = (data)=>{
+    console.log(data)
+    let t = JSON.parse(sessionStorage.getItem('filter')) || {}
+    t[data] = inputValue
+    sessionStorage.setItem('filter' , JSON.stringify(t))
+    dispatch(saveFilter())
   }
 
+  const updateSelection = (data) => {
+    console.log("data==>>", data);
+    setSelectedOptions(data);
+    restoreSession(data[0][1])
+  };
+
+  const makeData = (pro, key) => {
+    let result = {};
+    pro.items.map((data) => {
+      result.image = pro.main_image;
+      result.brand = pro.brand;
+      result.title = pro.title;
+      result.product_type = pro.product_type;
+      result.container_id = pro.container_id;
+      result.sku = data.sku;
+      result.match = key;
+    });
+    return result;
+  };
+
   const changeOptions = () => {
+    setLoading(true);
     fetch(proSearch(inputValue), productOptions)
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
-          let t = res.data.map((item) => {
-            return {
-              value: item,
-              key : item.items[0].sku,
-              label: (
-                <div key={item.items[0].sku} className={classes.label}>
-                  <div>
-                    <img src={item.items[0].main_image} alt="#" />
-                  </div>
-                  <div>
-                    <p>{item.items[0].title}</p>
-                    <p>
-                      {item.items[0].sku} - {item.items[0].barcode}
-                    </p>
-                  </div>
-                </div>
-              ),
-            };
+          var garbage = 0;
+          setLoading(false);
+          // console.log(searchData);
+          var temp = [];
+          res.data.map((item) => {
+            var result = {};
+            if (item.brand.toLowerCase().includes(inputValue.toLowerCase()))
+              temp.push(makeData(item, "brand"));
+            if (item.title.toLowerCase().includes(inputValue.toLowerCase()))
+              temp.push(makeData(item, "title"));
+            if (
+              item.product_type.toLowerCase().includes(inputValue.toLowerCase())
+            )
+              temp.push(makeData(item, "product_type"));
           });
-          setOptions(t);
+          if (temp.length === 0) {
+            setOptions([
+              {
+                key: "unique",
+                value: null,
+                label: (
+                  <div>
+                    {" "}
+                    <Icon source={SearchMinor} color="base" />{" "}
+                    <b>No Data Found</b>{" "}
+                  </div>
+                ),
+              },
+            ]);
+            return;
+          }
+          setOptions(
+            temp.map((item, i) => {
+              return {
+                key: i,
+                value: [item.container_id,item.match],
+                label: (
+                  <Columns
+                    spacing={{ xs: 2 }}
+                    columns={{
+                      xs: "1fr 3fr",
+                      sm: "0.5fr 2fr",
+                      md: "0.5fr 2fr",
+                    }}
+                  >
+                    {" "}
+                    <Image
+                      src={item.image}
+                      alt=""
+                      fallback="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px-Image_not_available.png"
+                    />{" "}
+                    <div>
+                      {" "}
+                      {item.title} <br /> <b>Brand</b> : {item.brand} <br />{" "}
+                      <b>Type</b> : {item.product_type} <br />{" "}
+                    </div>{" "} 
+                   
+                    
+                  </Columns>
+                ),
+              };
+            })
+          );
         } else alert(res.message);
       });
   };
+
+  // const searchData = [];
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let t = "";
@@ -76,6 +148,7 @@ function SearchField({setFilter}) {
         selected={selectedOptions}
         onSelect={updateSelection}
         textField={textField}
+        loading={loading}
       />
     </div>
   );

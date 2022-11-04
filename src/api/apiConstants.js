@@ -63,7 +63,6 @@ export const proSearch = (data) => {
 const filterHeader = {
  
     ...productHeaders , 
-    'Accept': 'application/json',
     'content-type': 'application/json'
   
 }

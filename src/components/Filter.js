@@ -1,42 +1,46 @@
 import { TextField, Select, Filters } from "@shopify/polaris";
 import { useState, useCallback, useEffect } from "react";
 import { filterHeaders, filterUrl, productOptions } from "../api/apiConstants";
+import InputField from "../utils/InputField";
+import SelectField from "../utils/SelectField";
 
 function ResourceListFilters() {
   const [taggedWith, setTaggedWith] = useState(null);
   const [queryValue, setQueryValue] = useState(null);
-
+  const [filters, setFilters] = useState([]);
   const [filterData, setFilterData] = useState({
-    inventory: "",
-    sku: "",
+    title: "",
     tags: "",
-    product_type: "",
-    vendor: "",
-    template: "",
-    status: "",
-    attribute: "",
-    activity: "",
     type: "",
+    price: "",
+    sku: "",
+    quantity: "",
+    status: "",
+    variant_attributes: "",
+    "collection.collection_id": "",
+    product_type: "",
+    brand: "",
   });
+
   const inventoryOptions = [
-    {label : 'Equals' , value : 'equals'},
-    {label : 'Not Equals' , value : 'not equals'},
-    {label : 'Greater Than or Equals to' , value : 'greater than or equals to'},
-    {label : 'Less Than or Equals to' , value : 'less than or equals to'},
-  ]
+    { label: "Equals", value: "equals" },
+    { label: "Not Equals", value: "not equals" },
+    { label: "Greater Than or Equals to", value: "greater than or equals to" },
+    { label: "Less Than or Equals to", value: "less than or equals to" },
+  ];
 
   const skuOptions = [
-    {label : 'Equals' , value : 'equals'},
-    {label : 'Not Equals' , value : 'not equals'},
-    {label : 'Contains' , value : 'contains'},
-    {label : 'Does not Contains' , value : 'does not contains'},
-    {label : 'Ends With' , value : 'starts with'},
-    {label : 'Ends With' , value : 'ends with'},
-  ]
+    { label: "Equals", value: "equals" },
+    { label: "Not Equals", value: "not equals" },
+    { label: "Contains", value: "contains" },
+    { label: "Does not Contains", value: "does not contains" },
+    { label: "Ends With", value: "starts with" },
+    { label: "Ends With", value: "ends with" },
+  ];
   const vendorOptions = [
-    {label : 'Equals' , value : 'equals'},
-    {label : 'Not Equals' , value : 'not equals'},
-  ]
+    { label: "Equals", value: "equals" },
+    { label: "Not Equals", value: "not equals" },
+  ];
 
   const handleTaggedWithChange = useCallback(
     (value) => setTaggedWith(value),
@@ -55,155 +59,38 @@ function ResourceListFilters() {
   }, [handleQueryValueRemove, handleTaggedWithRemove]);
 
   const handelFilterChange = (data, value) => {
-    console.log(data);
-    filterData[data] = value;
-    setFilterData({ ...filterData });
+    console.log(data, value);
+    console.log("filData===>", filterData);
+    setQueryValue(value)
+    // filterData[data] = ''
+    // filterData[data] = value;
+    setFilterData({ ...filterData, [data]: value });
   };
+  useEffect(() => {
+    console.log(filterData);
+  }, [filterData]);
 
-  const options = [
-    { label: "Today", value: "today" },
-    { label: "Yesterday", value: "yesterday" },
-    { label: "Last 7 days", value: "lastWeek" },
-  ];
-
-  const filters = [
-    {
-      key: "inventory",
-      label: "Inventory",
-      filter: (
-        <div>
-          <Select options={inventoryOptions} />
-          <TextField
-            key='inventory'
-            type="number"
-            value={filterData.inventory}
-            onChange={(value) => handelFilterChange("inventory", value)}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "sku",
-      label: "SKU",
-      filter: (
-        <div>
-          <Select options={skuOptions} />
-          <TextField
-            key='sku'
-            value={filterData.sku}
-            onChange={(value) => handelFilterChange("sku", value)}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "tags",
-      label: "Tags",
-      filter: (
-        <div>
-          <TextField
-            key='tags'
-            value={filterData.tags}
-            onChange={(value) => handelFilterChange("tags", value)}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "Product Type",
-      label: "Product Type",
-      filter: (
-        <div>
-          <TextField
-            key='pro_type'
-            value={filterData.product_type}
-            onChange={(value) => handelFilterChange("product_type", value)}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "Vendor",
-      label: "Vendor",
-      filter: (
-        <div>
-          <Select options={vendorOptions} />
-          <TextField
-            key='vendor'
-            value={filterData.vendor}
-            onChange={(value) => handelFilterChange("vendor", value)}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "Template Name",
-      label: "Template Name",
-      filter: (
-        <div>
-          <TextField
-            value={filterData.template}
-            onChange={(value) => handelFilterChange("template", value)}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "Product Status",
-      label: "Product Status",
-      filter: (
-        <div>
-          <TextField
-            value={filterData.status}
-            onChange={(value) => handelFilterChange("status", value)}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "Variant Attributes",
-      label: "Variant Attributes",
-      filter: (
-        <div>
-          <TextField
-            value={filterData.attribute}
-            onChange={(value) => handelFilterChange("attribute", value)}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "Activity",
-      label: "Activity",
-      filter: (
-        <div>
-          <TextField
-            value={filterData.activity}
-            onChange={(value) => handelFilterChange("activity", value)}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "Type",
-      label: "Type",
-      filter: (
-        <div>
-          <TextField
-            value={filterData.type}
-            onChange={(value) => handelFilterChange("type", value)}
-          />
-        </div>
-      ),
-    },
-  ];
-
-  useEffect(()=>{
-    console.log('dsfgdfs')
-    fetch(filterUrl , filterHeaders)
-    .then(res => res.json())
-    .then(res => console.log(res))
-  })
+  useEffect(() => {
+    fetch(filterUrl, filterHeaders)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          let fil = [];
+          res.data.map((item) => {
+            let t = {};
+            t.key = item.code;
+            t.label = item.title;
+            t.filter = item.options ? (
+              <SelectField options={item.options} data={item.code} />
+            ) : (
+              <InputField data={item.code}/>
+            );
+            fil = [...fil, t];
+          });
+          setFilters(fil);
+        } else alert(res.message);
+      });
+  }, []);
 
   const appliedFilters = !isEmpty(taggedWith)
     ? [
